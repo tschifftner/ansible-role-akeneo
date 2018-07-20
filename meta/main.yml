@@ -1,0 +1,23 @@
+---
+dependencies: []
+
+galaxy_info:
+  author: Tobias Schifftner
+  description: Installs akeneo on Debian/Ubuntu linux servers.
+  company: ambimax® GmbH
+  license: MIT
+  role_name: akeneo
+  min_ansible_version: 2.5
+  platforms:
+  - name: Debian
+    versions:
+    - jessie
+    - stretch
+  - name: Ubuntu
+    versions:
+    - xenial
+    - bionic
+  galaxy_tags:
+    - debian
+    - ubuntu
+    - akeneo

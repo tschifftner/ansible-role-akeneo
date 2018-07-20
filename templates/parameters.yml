@@ -1,0 +1,14 @@
+---
+parameters:
+    database_driver: {{ akeneo_database_driver }}
+    database_host: {{ akeneo_database_host }}
+    database_port: {{ akeneo_database_port }}
+    database_name: {{ akeneo_database_name }}
+    database_user: {{ akeneo_database_user }}
+    database_password: {{ akeneo_database_password }}
+    locale: {{ akeneo_locale }}
+    secret: {{ akeneo_secret }}
+    product_index_name: {{ akeneo_product_index_name }}
+    product_model_index_name: {{ akeneo_product_model_index_name }}
+    product_and_product_model_index_name: {{ akeneo_product_model_index_name }}
+    index_hosts: {{ akeneo_index_hosts }}

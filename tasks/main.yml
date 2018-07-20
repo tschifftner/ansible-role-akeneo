@@ -1,0 +1,5 @@
+---
+
+- name: Install akeneo
+  include: install.yml
+  tags: ['akeneo-install']

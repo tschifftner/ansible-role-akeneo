@@ -1,0 +1,9 @@
+---
+
+- src: tschifftner.nodejs
+- src: tschifftner.yarn
+- src: tschifftner.elasticsearch
+- src: tschifftner.nginx
+- src: tschifftner.php7-fpm
+- src: tschifftner.composer
+- src: tschifftner.mysql

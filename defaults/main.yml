@@ -1,0 +1,22 @@
+---
+akeneo_project_path: /var/www/akeneo/live
+akeneo_install_path: '{{ akeneo_project_path }}/releases/automatic'
+akeneo_unarchive_path: '{{ akeneo_install_path }}/pim-community-standard'
+akeneo_force_install: false
+akeneo_archive_url: https://download.akeneo.com/pim-community-standard-v2.3-latest.tar.gz #for minimal version
+
+akeneo_database_driver: pdo_mysql
+akeneo_database_host: localhost
+akeneo_database_port: null
+akeneo_database_name: akeneo_pim
+akeneo_database_user: akeneo_pim
+akeneo_database_password: akeneo_pim
+akeneo_locale: de
+akeneo_secret: X5J6Wk3XDU9xPOuFf6n2chPd
+akeneo_product_index_name: akeneo_pim_product
+akeneo_product_model_index_name: product_model_index_name
+akeneo_product_and_product_model_index_name: akeneo_pim_product_and_product_model
+akeneo_index_hosts: 'localhost:9200'
+
+akeneo_owner: www-data
+akeneo_group: www-data

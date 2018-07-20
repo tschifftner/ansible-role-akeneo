@@ -1,0 +1,99 @@
+---
+
+- name: Create installation dir
+  file:
+    path: '{{ akeneo_install_path }}'
+    state: directory
+    owner: '{{ akeneo_owner }}'
+    group: '{{ akeneo_group }}'
+
+- name: Unarchive akeneo
+  unarchive:
+    src: '{{ akeneo_archive_url }}'
+    dest: '{{ akeneo_install_path }}'
+    remote_src: yes
+    creates: '{{ akeneo_unarchive_path }}'
+    owner: '{{ akeneo_owner }}'
+    group: '{{ akeneo_group }}'
+
+- name: Check if akeneo install was run already
+  stat:
+    path: '{{ akeneo_unarchive_path }}/.installed'
+  register: _akeneo_install
+
+- name: set installation flag
+  set_fact:
+    akeneo_force_install: true
+  when: >
+    (not _akeneo_install.stat.exists) or
+    (akeneo_force_install is defined and akeneo_force_install)
+
+
+- name: Check if composer install was run already
+  stat:
+    path: '{{ akeneo_unarchive_path }}/composer.lock'
+  register: akeneo_composer_install
+
+- name: Install akeneo with composer
+  composer:
+    command: install
+    working_dir: '{{ akeneo_unarchive_path }}'
+    prefer_dist: yes
+    optimize_autoloader: yes
+  when: akeneo_force_install and not akeneo_composer_install.stat.exists
+
+- name: set parameters.yml
+  template:
+    src: 'parameters.yml'
+    dest: '{{ akeneo_unarchive_path }}/app/config/parameters.yml'
+    owner: '{{ akeneo_owner }}'
+    group: '{{ akeneo_owner }}'
+
+- name: Install yarn packages
+  command: yarn install
+  args:
+    chdir: '{{ akeneo_unarchive_path }}'
+    creates: '{{ akeneo_unarchive_path }}/yarn.lock'
+  ignore_errors: true
+  when: akeneo_force_install
+
+- name: clear cache for frontend
+  command: php bin/console cache:clear --no-warmup --env=prod
+  args:
+    chdir: '{{ akeneo_unarchive_path }}'
+  when: akeneo_force_install
+
+- name: install assets on frontend
+  command: php bin/console pim:installer:assets --symlink --clean --env=prod
+  args:
+    chdir: '{{ akeneo_unarchive_path }}'
+  when: akeneo_force_install
+
+- name: install akeneo
+  command: php bin/console pim:install --force --symlink --clean --env=prod --no-interaction
+  args:
+    chdir: '{{ akeneo_unarchive_path }}'
+  when: akeneo_force_install
+
+- name: run yarn webpack
+  command: yarn run webpack
+  args:
+    chdir: '{{ akeneo_unarchive_path }}'
+  when: akeneo_force_install
+
+- name: Ensure correct owner
+  command: 'chown -R {{ akeneo_owner }}:{{ akeneo_group }} {{ akeneo_unarchive_path }}'
+  when: akeneo_force_install
+
+- name: Set symlink to current
+  file:
+    src: '{{ akeneo_unarchive_path }}'
+    dest: /var/www/akeneo/live/releases/current
+    state: link
+    owner: '{{ akeneo_owner }}'
+    group: '{{ akeneo_group }}'
+
+- name: Touch akeneo installed file
+  shell: "echo `date '+%Y-%m-%d %H:%M:%S'` > {{ akeneo_unarchive_path }}/.installed"
+  when: akeneo_force_install
+
